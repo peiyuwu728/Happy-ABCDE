@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ABC Learning Application</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        #canvas-container { border: 1px solid #000; width: 300px; height: 200px; position: relative; }
+        canvas { border: 1px solid #ccc; }
+    </style>
+</head>
+<body>
+    <h1>ABC Learning Application</h1>
+    <div id="canvas-container">
+        <canvas id="handwritingCanvas" width="300" height="200"></canvas>
+    </div>
+    <button id="clearCanvas">Clear Canvas</button>
+    <h2>Scoring System</h2>
+    <p>Your Score: <span id="score">0</span></p>
+    <h2>Word Cards</h2>
+    <div id="wordCards"></div>
+    <script>
+        // Handwriting Canvas
+        const canvas = document.getElementById('handwritingCanvas');
+        const ctx = canvas.getContext('2d');
+        let drawing = false;
+
+        canvas.addEventListener('mousedown', () => { drawing = true; });
+        canvas.addEventListener('mouseup', () => { drawing = false; ctx.beginPath(); });
+        canvas.addEventListener('mousemove', draw);
+
+        function draw(event) {
+            if (!drawing) return;
+            ctx.lineWidth = 5;
+            ctx.lineCap = 'round';
+            ctx.strokeStyle = 'black';
+            ctx.lineTo(event.clientX - canvas.offsetLeft, event.clientY - canvas.offsetTop);
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(event.clientX - canvas.offsetLeft, event.clientY - canvas.offsetTop);
+        }
+
+        document.getElementById('clearCanvas').addEventListener('click', () => {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            updateScore(-1);
+        });
+
+        // Scoring System
+        let score = 0;
+        function updateScore(points) {
+            score += points;
+            document.getElementById('score').innerText = score;
+        }
+
+        // Word Cards
+        const words = ['Apple', 'Ball', 'Cat', 'Dog', 'Elephant'];
+        const wordCardsDiv = document.getElementById('wordCards');
+
+        words.forEach(word => {
+            const card = document.createElement('div');
+            card.innerText = word;
+            card.style.border = '1px solid #000';
+            card.style.margin = '5px';
+            card.style.display = 'inline-block';
+            card.style.padding = '10px';
+            wordCardsDiv.appendChild(card);
+        });
+    </script>
+</body>
+</html>
